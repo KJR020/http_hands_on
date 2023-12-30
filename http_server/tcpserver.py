@@ -13,7 +13,6 @@ class TCPServer:
             # socketの作成
             server_socket = socket.socket()
             server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            print(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
             # socketをlocalhostのポート8080番に割り当てる
             server_socket.bind(("localhost", 8080))
@@ -31,6 +30,13 @@ class TCPServer:
             # クライアントから送られてきたデータをファイルに書き出す
             with open("server_recv.txt", "wb") as f:
                 f.write(request)
+
+            # クライアントへ送信するレスポンスをファイルから取得する
+            with open("server_send.txt", "rb") as f:
+                response = f.read()
+
+            # クライアントへレスポンスを送信する
+            client_socket.send(response)
 
             # 通信完了
             client_socket.close()
