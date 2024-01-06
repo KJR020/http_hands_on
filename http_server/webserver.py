@@ -44,11 +44,17 @@ class WebServer:
             static_filepath = self.STATIC_ROOT / relative_path
 
             # ファイルからレスポンスボディを生成
-            with open(static_filepath, "rb") as f:
-                response_body = f.read()
+            try:
+                with open(static_filepath, "rb") as f:
+                    response_body = f.read()
 
-            # レスポンスラインを作成する
-            response_line = "HTTP/1.1 200 OK\r\n"
+                # レスポンスラインを作成する
+                response_line = "HTTP/1.1 200 OK\r\n"
+
+            except OSError:
+                # ファイルが見つからなかった場合は、404 Not Foundを返す
+                response_body = b"<html><body><h1>404 Not Found</h1></body></html>"
+                response_line = "HTTP/1.1 404 Not Found\r\n"
 
             # レスポンスヘッダーを作成する
             response_header = ""
